@@ -3,18 +3,18 @@ from torch import nn
 from torch.nn import functional as F
 
 
-class SACLR(nn.Module):
+class SACLRAll(nn.Module):
     def __init__(self, metric, N, rho, alpha, s_init, single_s, temp):
-        super(SACLR, self).__init__()
+        super(SACLRAll, self).__init__()
         self.criterion = ExponentialLoss(N=N, rho=rho, alpha=alpha, temp=temp, s_init=s_init, single_s=single_s, normalize=True)
 
     def forward(self, feats, feats_idx):
         return self.criterion(feats, feats_idx)
 
 
-class SACLRBase(nn.Module):
+class SACLRAllBase(nn.Module):
     def __init__(self, N, rho, alpha, s_init, single_s, temp):
-        super(SACLRBase, self).__init__()
+        super(SACLRAllBase, self).__init__()
         self.register_buffer("s_inv", torch.zeros(1 if single_s else N, ) + 1.0 / s_init)
         self.register_buffer("N", torch.zeros(1, ) + N)
         self.register_buffer("rho", torch.zeros(1, ) + rho)
@@ -47,7 +47,7 @@ class SACLRBase(nn.Module):
 
 
 
-class ExponentialLoss(SACLRBase):
+class ExponentialLoss(SACLRAllBase):
     def __init__(self, N, rho, alpha, s_init, single_s, temp, normalize=True):
         super().__init__(N, rho, alpha, s_init, single_s, temp)
         self.normalize = normalize

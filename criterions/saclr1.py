@@ -3,9 +3,9 @@ from torch import nn
 from torch.nn import functional as F
 
 
-class SCL(nn.Module):
+class SACLR1(nn.Module):
     def __init__(self, metric, N, rho, alpha, s_init, single_s, temp):
-        super(SCL, self).__init__()
+        super(SACLR1, self).__init__()
         if metric == "exponential":
             self.criterion = ExponentialLoss(N=N, rho=rho, alpha=alpha, temp=temp, s_init=s_init, single_s=single_s, normalize=True)
         elif metric == "cauchy":
@@ -17,9 +17,9 @@ class SCL(nn.Module):
         return self.criterion(feats, feats_idx)
 
 
-class SCLBase(nn.Module):
+class SACLR1Base(nn.Module):
     def __init__(self, N, rho, alpha, s_init, single_s, temp):
-        super(SCLBase, self).__init__()
+        super(SACLR1Base, self).__init__()
         self.register_buffer("s_inv", torch.zeros(1 if single_s else N, ) + 1.0 / s_init)
         self.register_buffer("N", torch.zeros(1, ) + N)
         self.register_buffer("rho", torch.zeros(1, ) + rho)
@@ -52,7 +52,7 @@ class SCLBase(nn.Module):
         self.s_inv[feats_idx] = (s_inv_a + s_inv_b) / 2.0
 
 
-class ExponentialLoss(SCLBase):
+class ExponentialLoss(SACLR1Base):
     def __init__(self, N, rho, alpha, s_init, single_s, temp, normalize=True):
         super().__init__(N, rho, alpha, s_init, single_s, temp)
         self.normalize = normalize
@@ -93,7 +93,7 @@ class ExponentialLoss(SCLBase):
 
 
 
-class CauchyLoss(SCLBase):
+class CauchyLoss(SACLR1Base):
     def __init__(self, N, rho, alpha, s_init, single_s, temp):
         super().__init__(N, rho, alpha, s_init, single_s, temp)
 

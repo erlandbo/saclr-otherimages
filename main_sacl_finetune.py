@@ -5,9 +5,9 @@ import time
 import os
 from data import build_dataset
 from networks import get_arch2infeatures, SimCLRNet
-from criterions.scl import SCL
+from criterions.saclr1 import SACLR1
 from criterions.saclr_batchmix import SACLRBatchMix
-from criterions.saclr import SACLR
+from criterions.saclrall import SACLRAll
 import torchvision
 from torch import nn
 from utils import load_pretrained_weights, save_checkpoint, AvgMetricMeter
@@ -153,8 +153,8 @@ def main_train():
     # print("model compiled")
     # model = torch.compile(model)
     
-    if args.method == "scl":
-        criterion = SCL(
+    if args.method == "saclr-1":
+        criterion = SACLR1(
             metric=args.metric,
             N=args.N,
             rho=args.rho,
@@ -163,8 +163,8 @@ def main_train():
             single_s=args.single_s,
             temp=args.temp
         )
-    elif args.method == "fullbatch":
-        criterion = SACLR(
+    elif args.method == "saclr-all":
+        criterion = SACLRAll(
             metric=args.metric,
             N=args.N,
             rho=args.rho,
@@ -332,7 +332,7 @@ def get_main_parser():
     parser.add_argument('--num_workers', default=20, type=int)
     
     parser.add_argument('--metric', default="cauchy", type=str, choices=["exponential", "cauchy"])
-    parser.add_argument('--method', default="scl", type=str, choices=["scl", "fullbatch", "batchmix"])
+    parser.add_argument('--method', default="saclr-1", type=str, choices=["saclr-1", "saclr-all", "batchmix"])
     parser.add_argument('--rho', default=0.9, type=float)
     parser.add_argument('--alpha', default=0.125, type=float)
     parser.add_argument('--s_init_t', default=2.0, type=float)
