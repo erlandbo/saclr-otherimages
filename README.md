@@ -43,6 +43,7 @@ python main_sacl.py --method saclr-1 --lr_scale linear --arch resnet18 --first_c
 
 
 ## Usage full-batchmode version SACLR-all (more than one negative sample)
+include argument --method saclr-all
 ##### Matrix-method
 
 ```
@@ -55,6 +56,7 @@ python main_sacl.py --method saclr-all --no-single_s --alpha 0.125 --rho 0.9 --s
 
 
 ## Usage SimCLR
+include argument --method simclr
 ```
 python main_sacl.py --method simclr --temp 0.5 --data_path ~/Datasets/imagenet100/ --dataset imagenet100 --epochs 400 --random_state 44
 ```
