@@ -8,6 +8,7 @@ from networks import get_arch2infeatures, SimCLRNet
 from criterions.scl import SCL
 from criterions.saclr_batchmix import SACLRBatchMix
 from criterions.saclr import SACLR
+from criterions.contrastive import SimCLR
 import torchvision
 from torch import nn
 from utils import load_pretrained_weights, save_checkpoint, AvgMetricMeter
@@ -162,6 +163,8 @@ def main_train():
             single_s=args.single_s,
             temp=args.temp
         )
+    elif args.method == "simclr":
+        criterion = SimCLR(temp=args.temp)
     else:
         raise ValueError("Invalid method criterion", args.method)
 
@@ -299,7 +302,7 @@ def get_main_parser():
     parser.add_argument('--num_workers', default=20, type=int)
     
     parser.add_argument('--metric', default="exponential", type=str, choices=["exponential", "cauchy"])
-    parser.add_argument('--method', default="scl", type=str, choices=["scl", "fullbatch", "batchmix"])
+    parser.add_argument('--method', default="scl", type=str, choices=["scl", "fullbatch", "batchmix", "simclr"])
     parser.add_argument('--rho', default=0.9, type=float)
     parser.add_argument('--alpha', default=0.125, type=float)
     parser.add_argument('--s_init_t', default=2.0, type=float)
